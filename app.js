@@ -5,12 +5,33 @@ const path = require('path')
 const app  = express()
 
 
-
-
+//body-parser config
 app.use(bodyParser.urlencoded({extended:false}));
+app.use(bodyParser.json());
+
+
+// cors policy settings
+app.use((req,res,next)=>{
+res.setHeader('Access-Control-Allow-Orign','*')
+res.setHeader('Access-Control-Allow-Method','GET','PUT','DELETE','POST','PATCH')
+res.setHeader('Access-Control-Allow-Headers','content-Type','Autorization',)
+next();
+})
+
+
+//error middleware 
+app.use((error,req,res,next)=>{
+const errStatus = error.statusCode|| 502;
+const errorMesage  = errStatus.message ;
+res.status(errStatus).json({message:errorMesage})
+})
+//importation of all routers
+const blogsRouter = require('./routes/blogs')
+app.use('/blogs',blogsRouter)
 
 
 
+// app listening and mongodb connection
 const mongodbUrl = 'mongodb://localhost:27017/tech-community-api';
 mongoose.connect(mongodbUrl)
 .then(result=>{
