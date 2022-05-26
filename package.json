@@ -1,0 +1,22 @@
+{
+  "name": "tech-community-api-levelup",
+  "version": "1.0.0",
+  "description": "In this project, you are part of a team building a blog platform. One requirement is for a REST API service to provide posts information using the Nodejs Express framework. The requirements include filtering and ordering requirements, response codes and error messages for the queries you must implement.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kisanola/tech-community-api-levelup.git"
+  },
+  "author": "djibrilM",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kisanola/tech-community-api-levelup/issues"
+  },
+  "homepage": "https://github.com/kisanola/tech-community-api-levelup#readme",
+  "dependencies": {
+    "express": "^4.18.1"
+  }
+}
