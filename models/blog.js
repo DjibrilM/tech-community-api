@@ -1,18 +1,18 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const slug  = require('slugify-mongoose')
-
+const  slug = require('mongoose-slug-generator');
 
 const blogSchema = new Schema({
 title:{
 type:String,
 required:true
 },
-slug:{
-type:String,
-slug:"title"
-},
+slug: { type: String, slug: "title" },
 description:{
+type:String,
+required:true
+},
+BlogImage:{
 type:String,
 required:true
 },
@@ -28,5 +28,6 @@ updated_at    : { type: Date,
     },
     
 })
+
 
 module.exports = mongoose.model('blogs',blogSchema);

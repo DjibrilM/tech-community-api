@@ -23,6 +23,9 @@ blogControllers.createBlog
 );
 
 
+//route for geting blogs
+router.get('/fetch',blogControllers.getBlogs)
+
 
 
 
