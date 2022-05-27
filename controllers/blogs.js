@@ -7,7 +7,6 @@ const description = req.body.description;
 const imageUrl = req.body.image
 
 
-
 const validationError =   validationResult(req)
 if(!validationError.isEmpty()){
 res.status(402).json({message:'validationError',
@@ -50,8 +49,6 @@ res.status(202).json({message:'postCreated',data:save});
 exports.getBlogs = async (req,res,next)=>{ 
 const page = req.query;
 const elementParPage = 10
-
-console.log(page, 'pages');
 
 try {
     const documentNumber = await blogMedel.find().countDocuments();
