@@ -24,7 +24,15 @@ blogControllers.createBlog
 
 
 //route for geting blogs
-router.get('/fetch',blogControllers.getBlogs)
+router.get('/fetch',blogControllers.getBlogs);
+//get  one single blog
+router.get('/singleBlog/:id',blogControllers.getSingleBlog);
+//get update blog
+router.get('/getUpdate/:id',blogControllers.getupdate)
+//post update  blog
+router.post('/update',blogControllers.postEditBlog);
+
+
 
 
 
