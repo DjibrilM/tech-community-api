@@ -1,8 +1,40 @@
-const bodyParser = require('body-parser')
+
 const express = require('express')
-const { default: mongoose } = require('mongoose')
 const path = require('path')
+const bodyParser = require('body-parser')
 const app  = express()
+const { default: mongoose } = require('mongoose')
+const multer = require('multer')
+
+
+//multer store config 
+const fileStorage = multer.diskStorage({
+  destination: (req, file, cb) => {
+    cb(null, 'data/images');
+  },
+  filename: (req, file, cb) => {
+    cb(null, new Date().toISOString() + '-' + file.originalname);
+  }
+});
+
+const fileFilter = (req, file, cb) => {
+  if (
+    file.mimetype === 'image/png' ||
+    file.mimetype === 'image/jpg' ||
+    file.mimetype === 'image/jpeg'
+  ) {
+    cb(null, true);
+  } else {
+    cb(null, false);
+  }
+};
+
+app.use(multer
+  ({ storage: fileStorage, fileFilter: fileFilter }).array('images',10));
+//mulet store config end 
+
+
+
 
 //body-parser config
 app.use(bodyParser.urlencoded({extended:false}));
@@ -11,16 +43,16 @@ app.use(bodyParser.json());
 
 // cors policy settings
 app.use((req,res,next)=>{
-    res.setHeader('Access-Control-Allow-Origin', 'http://localhost:3000');
+    res.setHeader('Access-Control-Allow-Origin', '*'); 
     res.setHeader(
       'Access-Control-Allow-Methods',
       'OPTIONS, GET, POST, PUT, PATCH, DELETE'
     );
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization ');
-    res.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization');
-
-next();
+    req.setHeader('Access-Control-Allow-Headers', 'Content-Type, Authorization ');
+next()
 })
+
+
 
 
 //error middleware 
@@ -31,7 +63,9 @@ res.status(errStatus).json({message:errorMesage})
 })
 //importation of all routers
 const blogsRouter = require('./routes/blogs')
+const authentification = require('./routes/auth')
 app.use('/blogs',blogsRouter)
+app.use('/authentication',authentification)
 
 
 
