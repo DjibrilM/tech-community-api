@@ -14,7 +14,7 @@ const imageUrl = req.body.image
 const validationError =   validationResult(req)
 if(!validationError.isEmpty()){
 res.status(402).json({message:'validationError',
-validationMessage:validationError})
+validationMessage:validationError.array()})
 return next()
 }
 
@@ -126,7 +126,7 @@ const imageUrl = req.body.imageUrl;
 const validationError =   validationResult(req)
 if(!validationError.isEmpty()){
 res.status(402).json({message:'validationError',
-validationMessage:validationError})
+validationMessage:validationError.array()})
 return next()
 }
 
@@ -155,6 +155,9 @@ try {
     console.log(error)
     res.status(404).json({message:'something went wrong ! Make sure that you provided the right id or you are the owner of this blogs',error:error})
 }
+
+
+
 }
 
 

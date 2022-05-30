@@ -6,8 +6,8 @@ const { default: mongoose } = require('mongoose')
 const multer = require('multer')
 const app = express()
 
-//body-parser config
-app.use(bodyParser.urlencoded({extended:false}));
+//body-parser config 
+app.use(bodyParser.urlencoded({extended:false})); // app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
 app.use(bodyParser.json());
 //body-parser parser configuration end
 
@@ -33,8 +33,7 @@ const fileStorage = multer.diskStorage({
     }
   };
   
-  // app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
-  app.use(bodyParser.json()); // application/json
+
   app.use(
     multer({ storage: fileStorage, fileFilter: fileFilter }).array('file',10)
   );
@@ -63,7 +62,6 @@ app.use('/authentication',authentification)
 const mongodbUrl = 'mongodb://localhost:27017/tech-community-api';
 mongoose.connect(mongodbUrl)
 .then(result=>{
-    console.log(result)
     app.listen('8080')
 }).catch(err=>{
    console.log(err);

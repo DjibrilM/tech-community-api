@@ -22,11 +22,12 @@ default: Date.now,
 immutable:true
 },
 updated_at    : { type: Date,
-    required: true,
-    default: Date.now,
-    immutable:true
-    },
-    
+required: true,
+default: Date.now,
+immutable:true
+},
+
+
 })
 
 

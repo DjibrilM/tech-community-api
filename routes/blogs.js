@@ -31,13 +31,13 @@ router.get('/singleBlog/:id',blogControllers.getSingleBlog);
 router.get('/getUpdate/:id',blogControllers.getupdate)
 //post update  blog
 router.post('/update',[
-    body('title','the title should be at least with four caracters')
+body('title','the title should be at least with four caracters')
     // .isAlphanumeric()
-    .isLength({min:4}),
-    body('description','the description should of 10 characters as the minimum')
-    // isAlphanumeric()
+.isLength({min:4}),
+body('description','the description should of 10 characters as the minimum')
+ // isAlphanumeric()
     .isLength({min:10})
-    ],blogControllers.postEditBlog);
+],blogControllers.postEditBlog);
 
 
 
