@@ -54,6 +54,7 @@ exports.getBlogs = async (req,res,next)=>{
 const page = req.query;
 const elementParPage = 10
 
+console.log('blog by ')
 
 try {
     const documentNumber = await blogMedel.find().countDocuments();
@@ -67,7 +68,7 @@ try {
     })
 } catch (error) {
     console.log(error)
-    res.status({message:'something went wrong please come back later !'})
+    res.status.json({message:'something went wrong please come back later !'})
 }
 }
 
@@ -121,7 +122,15 @@ const blogId = req.body.id;
 const title = req.body.title;
 const descriptions = req.body.description;
 const imageUrl = req.body.imageUrl;
-console.log(imageUrl);
+
+const validationError =   validationResult(req)
+if(!validationError.isEmpty()){
+res.status(402).json({message:'validationError',
+validationMessage:validationError})
+return next()
+}
+
+
 let image;
 
 try {

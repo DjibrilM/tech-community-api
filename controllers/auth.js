@@ -10,10 +10,7 @@ const userProfileImage = req.files;
 const userPassword = req.body.password;
 
 
-
-
-
-
+console.log('file', userProfileImage);
 
 
 
