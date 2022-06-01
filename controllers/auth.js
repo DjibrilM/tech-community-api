@@ -1,7 +1,16 @@
 const bcrypt = require('bcrypt');
+const crypto = require('crypto');
 const {validationResult}=  require('express-validator')
 const userModel = require('../models/user');
+const RestExpireFunc = require('../helpers/auth')
+const nodemailer = require("nodemailer");
+const sendGrideTransport = require("nodemailer-sendgrid-transport");
 
+const nodemailerTransport  = nodemailer.createTransport(sendGrideTransport({
+    auth:{
+        api_key:'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',
+    }
+}))
 
 /* the following function trigger the the user signed up.
 for signed up user should provide the password 
@@ -67,7 +76,6 @@ console.log(userProfileImage[0].path);
 }
 
 
-
 exports.login = async (req,res,next)=>{
 const email = req.body.email;
 const password = req.body.password;
@@ -104,3 +112,52 @@ try {
 }
 
 }
+
+
+
+//this function will seng the reset link to the 
+//user who want to rest the password  
+
+exports.GetresetPassword = async (req,res,next)=>{
+const email = req.body.email;
+
+try {
+    const user = await userModel.find({email:email});
+    if(!user[0]){
+        console.log('no user found with this email')     
+    }
+
+    const token = 2002083
+
+    user[0].resetToken = token ;
+    const save = await user[0].save();
+
+    //set the token expiration time 
+    const deleteResetToken = require('../helpers/auth');
+    deleteResetToken.deleteRestToken(user[0].email);
+
+    const sendEmail = await nodemailerTransport.sendMail({
+        to:user[0].email,
+        from:'mugishodjibril2004@gmail.com',
+        subject:'rest password',
+        html:`<h3 style="background red">http://localhost:8080/authentication/restePassword/${token}</h3>`
+    })
+
+    res.status(202).json({message:'token sent'});
+
+} catch (error) {
+    console.log(error)
+    res.status(500).json({message:"something went wrong please try again!"});
+}
+
+}
+
+
+
+ const deleteRestToken = async  (email)=>{
+        const user = await userModel.find({email:email});
+        userModel.resetToken = null;
+        console.log(user,'the restPassword key expires ')
+}
+
+

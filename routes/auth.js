@@ -21,4 +21,10 @@ route.post('/login',[
     authControllers.login)
 
 
+route.post('/getRest',[
+    body('email', 'invalid email !').isEmail(),
+    authControllers.GetresetPassword
+])
+
+
 module.exports = route

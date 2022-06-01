@@ -18,6 +18,10 @@ const user = new schema({
         required:true,
         type:String
     },
+    resetToken:{
+    type:String,
+    required:false
+    },
     email:{
         type:String,
         required:true

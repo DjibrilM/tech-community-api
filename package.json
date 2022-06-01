@@ -19,6 +19,8 @@
     "mongoose": "^6.3.4",
     "mongoose-slug-generator": "^1.0.4",
     "multer": "^1.4.4-lts.1",
+    "nodemailer": "^6.7.5",
+    "nodemailer-sendgrid-transport": "^0.2.0",
     "nodemon": "^2.0.16",
     "npm": "^8.11.0",
     "slugify-mongoose": "^1.0.2"
