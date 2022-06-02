@@ -35,7 +35,7 @@ const fileStorage = multer.diskStorage({
   
 
   app.use(
-    multer({ storage: fileStorage, fileFilter: fileFilter }).array('file',10)
+    multer({ storage: fileStorage, fileFilter: fileFilter }).array('files',10)
   );
 
 
@@ -62,7 +62,7 @@ app.use('/authentication',authentification)
 const mongodbUrl = 'mongodb://localhost:27017/tech-community-api';
 mongoose.connect(mongodbUrl)
 .then(result=>{
-    app.listen('8080')
+    app.listen('3000')
 }).catch(err=>{
    console.log(err);
 //    res.status(err.statusCode).json({err:error,customerMessage:'something went wrong when connecting to the database'})

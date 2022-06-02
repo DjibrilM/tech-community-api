@@ -5,9 +5,9 @@ const authControllers = require('../controllers/auth')
 
 route.post ('/signup',[
 body('firstName', 'invalid first name ',)
-.isAlphanumeric()
 .trim(),
-body('secondName', 'invalid second',),
+body('secondName', 'invalid second name',)
+.trim(),
 body('email','invalid email')
 .isEmail(),
 body('password', 'invalid password ').isLength({min:6})
@@ -23,8 +23,11 @@ route.post('/login',[
 
 route.post('/getRest',[
     body('email', 'invalid email !').isEmail(),
-    authControllers.GetresetPassword
+    authControllers.GetResetPassword
 ])
 
+route.post('/resetPassword',[
+    body('email').isEmail()
+],authControllers.postResetPassword)
 
 module.exports = route

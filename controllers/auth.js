@@ -5,6 +5,7 @@ const userModel = require('../models/user');
 const RestExpireFunc = require('../helpers/auth')
 const nodemailer = require("nodemailer");
 const sendGrideTransport = require("nodemailer-sendgrid-transport");
+const JWT = require('jsonwebtoken')
 
 const nodemailerTransport  = nodemailer.createTransport(sendGrideTransport({
     auth:{
@@ -31,11 +32,14 @@ const secondName = req.body.secondName;
 const email = req.body.email;
 const userProfileImage = req.files;
 const password = req.body.password;
-console.log(userProfileImage[0].path);
 
+console.log(userProfileImage);
 
- validationErrror = validationResult(req)
+if(!userProfileImage[0].path){
+return res.status(403).json({message:'profile image is required !'});
+}
 
+const  validationErrror = validationResult(req)
 
   if(!validationErrror.isEmpty()){
   res.status(400).json({message:'validation faild check your input ',
@@ -66,8 +70,14 @@ console.log(userProfileImage[0].path);
      })
     
      const save = await userData.save();
+     
+    //generate the JWT token 
+    const jwt = JWT.sign({email:save.email,id:save._id},
+    '66b0c36b16246afa30d35eaea1fdf71c6aec2bdd075a4d226a0ae33897b63e86',{expiresIn:'1h'}); 
 
-     res.status(202).json({message:'you have been successfully signed up.',data:save})
+     res.status(202).json({message:'you have been successfully signed up.',data:save,JWTtoken:jwt})
+
+
  } catch (error) {
      console.log(error)
      res.status(500).json({message:'something went wrong with our system.'})
@@ -115,10 +125,10 @@ try {
 
 
 
-//this function will seng the reset link to the 
+//this function will send the reset link to the 
 //user who want to rest the password  
 
-exports.GetresetPassword = async (req,res,next)=>{
+exports.GetResetPassword = async (req,res,next)=>{
 const email = req.body.email;
 
 try {
@@ -127,12 +137,18 @@ try {
         console.log('no user found with this email')     
     }
 
-    const token = 2002083
-
+    //check first if the user has a reste token if the user has 
+    //now the user will have to wait until that token expires 
+    if(user[0].resetToken ){
+        return res.status(403).json({message:'wait until the link expires'})
+    }
+   
+   //generate the reset token 
+    const token = await crypto.randomBytes(32).toString('hex')
     user[0].resetToken = token ;
     const save = await user[0].save();
 
-    //set the token expiration time 
+    //set the token expiration time  which is 5minutes max
     const deleteResetToken = require('../helpers/auth');
     deleteResetToken.deleteRestToken(user[0].email);
 
@@ -153,11 +169,29 @@ try {
 }
 
 
+//this function will reset the password 
+exports.postResetPassword = async (req,res,next)=>{
+const password = req.body.password;
+const Token = req.body.token ;
 
- const deleteRestToken = async  (email)=>{
-        const user = await userModel.find({email:email});
-        userModel.resetToken = null;
-        console.log(user,'the restPassword key expires ')
+try {
+    const user  = await userModel.find({resetToken:Token});
+    if(!user[0]){
+      return  res.status(403).json({message:'enable to reste the password please make sure that the the link has not yet expired'})
+    }
+
+    //in this case no data will be send beacause the returned
+    //data contain all the user informations 
+    const save = await user[0].save();
+    res.status(202).json({message:'password reseted'})
+    
+} catch (error) {
+    console.log(error);
+    return res.status(500).json({message:'something went wrong please try again !'})
 }
+
+}
+
+
 
 

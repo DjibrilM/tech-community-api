@@ -1,11 +1,12 @@
 const usersModel = require('../models/user');
 
-exports.deleteRestToken =  (email)=>{
+
+exports.deleteRestToken = async  (email,res)=>{
+
 usersModel.find({email:email})
 .then(user=>{
     setTimeout(() => {
-        console.log('token reseted')
-        user[0].resetToken = 10;
+        user[0].resetToken = null;
         return user[0].save()
     }, 180000);
 })
