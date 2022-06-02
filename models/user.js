@@ -25,7 +25,7 @@ const user = new schema({
     email:{
         type:String,
         required:true
-    }
+    },
 })
 
 

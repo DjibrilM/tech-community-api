@@ -1,15 +1,15 @@
 const {validationResult, Result} = require('express-validator');
 const blogMedel = require('../models/blog');
-// const mongodb = require('mongodb');
-// const mongoose = require('mongoose');
-// const { ObjectID } = require('bson');
-// const ObjectId = require('mongodb').ObjectID;
 
 
 exports.createBlog= async (req,res,next)=>{
 const title = req.body.title;
 const description = req.body.description;
-const imageUrl = req.body.image
+const blogImage = req.files;
+
+//check if the blog has an image and if it it doesn't 
+//we block the request 
+if(!blogImage[0].path)return res.status(403).json({message:"blog's image is required"})
 
 const validationError =   validationResult(req)
 if(!validationError.isEmpty()){
@@ -31,11 +31,11 @@ try {
     res.status(502).json({message:'something went went with our sever please come back later',error:error});
 }
 
-
 const newModel = new blogMedel({
 title:title,
 description:description,
-BlogImage:imageUrl
+BlogImage:blogImage[0].path,
+creator:req.user._id
 })
 
 try {
@@ -54,11 +54,9 @@ exports.getBlogs = async (req,res,next)=>{
 const page = req.query;
 const elementParPage = 10
 
-console.log('blog by ')
-
 try {
     const documentNumber = await blogMedel.find().countDocuments();
-    const fetchDocument =await blogMedel.find().skip((page.page - 1)* elementParPage).limit(elementParPage)
+    const fetchDocument =await blogMedel.find().populate('creator','profileImagePath , firstName , secondName').skip((page.page - 1)* elementParPage).limit(elementParPage)
     res.status(200)
     .json({message:'data fetched successfully',
      data:fetchDocument,
@@ -99,9 +97,16 @@ Reading the docuemntation of more details
 exports.getupdate = async (req,res,next)=>{
 
   const id = req.params.id;
+  console.log(id)
 
   try {
     const blog = await blogMedel.findById(id)
+
+    //check if the user who want to  update the blog is the one who created it 
+    if(!blog.creator.toString() !== req.user._id.toString() ){
+        return res.status(403).json({message:'aunthentication faild , check if you are the owner of this blog  '})
+    }
+    
     res.status(200).json({message:'post loaded',data:blog})
   } catch (error) {
     console.log(error)
@@ -116,12 +121,11 @@ exports.getupdate = async (req,res,next)=>{
 //updating the targeted blog .
 //the person who try to update should be the person who
 //created the blog .
-
 exports.postEditBlog = async (req,res,next)=>{
 const blogId = req.body.id;
 const title = req.body.title;
 const descriptions = req.body.description;
-const imageUrl = req.body.imageUrl;
+const blogImage = req.files;
 
 const validationError =   validationResult(req)
 if(!validationError.isEmpty()){
@@ -135,28 +139,40 @@ let image;
 
 try {
     const blog = await blogMedel.findById(blogId)
-    if(!imageUrl){
+    if(blog.creator.toString() !== req.user._id.toString()){
+    // console.log(blog.creator.toString(), 'space' , req.user._id.toString())
+    return res.status(403).json({message:'No authorise please make sure that you have the right access to this blog'})
+    }
+
+    if(!blogImage[0]){
      image = blog.BlogImage;
     }else
     {
-      image = imageUrl;
-
+      image = blogImage[0].path;
     }
     
-    blog.title = title;
-    blog.description =  descriptions;
-    blog.imageUrl = image;
-    console.log(blog);
+    const update = {
+        title: title,
+        description:descriptions,
+        imageUrl:image,
+    }
 
-    const save = await blog.save()
-    res.json({message:'bog updated',data:save})
+    const filter = {
+        _id:blogId
+    }
+    const updatedDoc = await blogMedel.findOneAndUpdate(filter._id,update,{new:true})
+    console.log(updatedDoc, 'updated doc !');
+    // blog.title = title;
+    // blog.description =  descriptions;
+    // blog.imageUrl = image;
+
+    // const save = await blog.save()
+    res.json({message:'blog updated',data:updatedDoc})
 
 } catch (error) {
     console.log(error)
     res.status(404).json({message:'something went wrong ! Make sure that you provided the right id or you are the owner of this blogs',error:error})
 }
-
-
 
 }
 

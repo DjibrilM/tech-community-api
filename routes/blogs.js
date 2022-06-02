@@ -2,6 +2,7 @@ const express =  require('express');
 const router = express.Router()
 const blogControllers = require('../controllers/blogs')
 const {body} = require('express-validator');
+const isAth = require('../middlewares/is-auth')
 
 
 // in this route we do some validations the blog
@@ -19,7 +20,7 @@ body('description','the description should of 10 characters as the minimum')
 // isAlphanumeric()
 .isLength({min:10})
 ],
-blogControllers.createBlog
+isAth , blogControllers.createBlog
 );
 
 
@@ -28,23 +29,16 @@ router.get('/fetch',blogControllers.getBlogs);
 //get  one single blog
 router.get('/singleBlog/:id',blogControllers.getSingleBlog);
 //get update blog
-router.get('/getUpdate/:id',blogControllers.getupdate)
+router.get('/getUpdate/:id', isAth ,  blogControllers.getupdate)
 //post update  blog
-router.post('/update',[
+router.post('/postUpdate',[
 body('title','the title should be at least with four caracters')
     // .isAlphanumeric()
 .isLength({min:4}),
 body('description','the description should of 10 characters as the minimum')
  // isAlphanumeric()
     .isLength({min:10})
-],blogControllers.postEditBlog);
-
-
-
-
-
-
-
+],isAth,blogControllers.postEditBlog);
 
 
 

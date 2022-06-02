@@ -16,19 +16,16 @@ BlogImage:{
 type:String,
 required:true
 },
-created_at    : { type: Date,
-required: true,
-default: Date.now,
-immutable:true
+creator:{
+    type:Schema.Types.ObjectId,
+    ref:'users',
+    required:true
+}
 },
-updated_at    : { type: Date,
-required: true,
-default: Date.now,
-immutable:true
-},
-
-
-})
+{
+timestamps:true,
+}
+)
 
 
 module.exports = mongoose.model('blogs',blogSchema);

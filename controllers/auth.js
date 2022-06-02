@@ -5,13 +5,17 @@ const userModel = require('../models/user');
 const RestExpireFunc = require('../helpers/auth')
 const nodemailer = require("nodemailer");
 const sendGrideTransport = require("nodemailer-sendgrid-transport");
+const blogModel = require('../models/blog')
 const JWT = require('jsonwebtoken')
 
-const nodemailerTransport  = nodemailer.createTransport(sendGrideTransport({
-    auth:{
-        api_key:'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',
-    }
-}))
+const transporter = nodemailer.createTransport(
+    sendGrideTransport({
+      auth: {
+        api_key:
+          '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'
+      }
+    })
+  );
 
 /* the following function trigger the the user signed up.
 for signed up user should provide the password 
@@ -35,7 +39,7 @@ const password = req.body.password;
 
 console.log(userProfileImage);
 
-if(!userProfileImage[0].path){
+if(!userProfileImage[0]){
 return res.status(403).json({message:'profile image is required !'});
 }
 
@@ -73,10 +77,8 @@ const  validationErrror = validationResult(req)
      
     //generate the JWT token 
     const jwt = JWT.sign({email:save.email,id:save._id},
-    '66b0c36b16246afa30d35eaea1fdf71c6aec2bdd075a4d226a0ae33897b63e86',{expiresIn:'1h'}); 
-
-     res.status(202).json({message:'you have been successfully signed up.',data:save,JWTtoken:jwt})
-
+    '66b0c36b16246afa30d35eaea1fdf71c6aec2bdd075a4d226a0ae33897b63e86',{expiresIn:'3h'}); 
+     res.status(202).json({message:'you have been successfully signed up.',data:save,token:jwt})
 
  } catch (error) {
      console.log(error)
@@ -89,7 +91,6 @@ const  validationErrror = validationResult(req)
 exports.login = async (req,res,next)=>{
 const email = req.body.email;
 const password = req.body.password;
-
 
 validationErrror = validationResult(req)
 
@@ -114,8 +115,9 @@ try {
         res.status(400).json({message:'invalid password ',})
         return next();
     }
-
-    res.status(202).json({message:'you have successfully login',data:user})
+    const jwt = JWT.sign({email:user[0].email,id:user[0]._id},
+    '66b0c36b16246afa30d35eaea1fdf71c6aec2bdd075a4d226a0ae33897b63e86',{expiresIn:'3h'}); 
+    res.status(202).json({message:'you have successfully login',data:user,token:jwt})
 } catch (error) {
     console.log(error)
     res.status(500).json({message:'something went wrong with our system please come back later.'})
@@ -169,6 +171,7 @@ try {
 }
 
 
+
 //this function will reset the password 
 exports.postResetPassword = async (req,res,next)=>{
 const password = req.body.password;
@@ -190,6 +193,39 @@ try {
     return res.status(500).json({message:'something went wrong please try again !'})
 }
 
+}
+
+
+
+//get user profile 
+exports.PubliProfile = async (req,res,next)=>{
+const userId = req.params.id;
+console.log(userId, 'user id')
+try {
+const user = await userModel.findById(userId).select('firstName  secondName  profileImagePath')
+const userBlogs  = await blogModel.find({creator:userId});
+
+res.status(202).json({message:'data loaded', user:user,blogs:userBlogs})
+} catch (error) {
+console.log(error);
+res.status(500).json({message:'something went wrong please try again'});
+}
+}
+
+//get the private profile : this will be valaible for the owner of the account only
+exports.getPrivateProfile = async(req,res,next)=>{
+    console.log(req.user);
+    const userId = req.user._id;
+    console.log(userId, 'user id')
+    try {
+    const user = await userModel.findById(userId).select('firstName  secondName email  profileImagePath')
+    const userBlogs  = await blogModel.find({creator:userId});
+    
+    res.status(202).json({message:'data loaded', user:user,blogs:userBlogs})
+    } catch (error) {
+    console.log(error);
+    res.status(500).json({message:'something went wrong please try again'});
+    }  
 }
 
 

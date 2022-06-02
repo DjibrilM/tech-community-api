@@ -2,6 +2,7 @@ const express = require('express');
 const {body} = require('express-validator')
 const route = express.Router();
 const authControllers = require('../controllers/auth')
+const isAth = require('../middlewares/is-auth')
 
 route.post ('/signup',[
 body('firstName', 'invalid first name ',)
@@ -28,6 +29,10 @@ route.post('/getRest',[
 
 route.post('/resetPassword',[
     body('email').isEmail()
-],authControllers.postResetPassword)
+],authControllers.PubliProfile)
 
+
+route.get('/pulicProfile/:id', isAth , authControllers.PubliProfile)
+route.get('/privateProfile',isAth, authControllers.getPrivateProfile)
 module.exports = route
+

@@ -11,6 +11,10 @@ app.use(bodyParser.urlencoded({extended:false})); // app.use(bodyParser.urlencod
 app.use(bodyParser.json());
 //body-parser parser configuration end
 
+//images request path 
+app.use('/data/images',express.static(path.join('__dirname', 'data/images')))
+//
+
 //multer configuration 
 const fileStorage = multer.diskStorage({
     destination: (req, file, cb) => {
