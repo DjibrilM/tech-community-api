@@ -173,6 +173,39 @@ try {
     console.log(error)
     res.status(404).json({message:'something went wrong ! Make sure that you provided the right id or you are the owner of this blogs',error:error})
 }
+}
+
+//delete blogs
+
+exports.deleteBlog = async (req,res,next)=>{
+
+    console.log('deleting')
+
+    const blogId = req.body.id;
+
+    try {
+       
+    const blog = await blogMedel.findById(blogId)
+
+    if(!blog){
+        console.log('No blog found !');
+        return res.status(403).json({message:'Blog not found. The followind blog maybe deleted !'})
+    }
+   
+    if(blog.creator.toString()  !== req.user._id.toString()){
+        return res.status(403).json({message:"No authorized"})
+    }
+
+    
+
+
+
+    const deleteBlog = await blogMedel.findByIdAndDelete(blogId);
+    res.status(202).json({message:"blog deleted!"}) 
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({message:'something went wrong '})
+    }
 
 }
 
