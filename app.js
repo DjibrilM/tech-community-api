@@ -1,6 +1,4 @@
 
-
-
 //hello something did change 
 
 const express = require('express');
@@ -75,3 +73,4 @@ mongoose.connect(mongodbUrl)
    console.log(err);
 //    res.status(err.statusCode).json({err:error,customerMessage:'something went wrong when connecting to the database'})
 })
+ 
