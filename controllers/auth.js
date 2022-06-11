@@ -46,7 +46,7 @@ return res.status(403).json({message:'profile image is required !'});
 const  validationErrror = validationResult(req)
 
   if(!validationErrror.isEmpty()){
-  res.status(400).json({message:'validation faild check your input ',
+  res.status(400).json({message:'validation failed check your input ',
   error:validationErrror.array()})
   return next();
   }
@@ -212,7 +212,7 @@ res.status(500).json({message:'something went wrong please try again'});
 }
 }
 
-//get the private profile : this will be valaible for the owner of the account only
+//get the private profile : this will be available  for the owner of the account only
 exports.getPrivateProfile = async(req,res,next)=>{
     console.log(req.user);
     const userId = req.user._id;

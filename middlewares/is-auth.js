@@ -14,7 +14,7 @@ let decodedToken ;
 try {
     decodedToken = jWT.verify(token, '66b0c36b16246afa30d35eaea1fdf71c6aec2bdd075a4d226a0ae33897b63e86')
     if(!decodedToken){
-        return res.status(403).json({message:'Authentication faild  ! '})
+        return res.status(403).json({message:'Authentication failed   ! '})
     }
     const user = await users.findById(decodedToken.id)
     req.user = user;
@@ -22,7 +22,7 @@ try {
 
 } catch (error) {
     console.log(error)
-    res.status(500).json({messge:'somthing went wrong '});
+    res.status(500).json({messge:'something went wrong '});
 }
 
 

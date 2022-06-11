@@ -14,7 +14,6 @@ body('email','invalid email')
 body('password', 'invalid password ').isLength({min:6})
 ],authControllers.postSignup)
 
-
 route.post('/signin',[
     body('email','invalid email').isEmail(),
     body('password','invalid password , the password must contain more than five character').isLength({min:5})
