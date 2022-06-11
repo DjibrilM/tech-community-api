@@ -25,7 +25,6 @@ points which need update or you want to add some new features please go ahead an
 #### 1.Authentication post request
 This is the structure of how the post authentication  request should look like miss one of these properies will lead to a response error make sure that you respect all requirements 
 
-
 * #### signup
 
 ```
