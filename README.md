@@ -202,6 +202,7 @@ headers: {
 })
 ```
 
+
 > in all request you must attach the Authorization header in all requests you send this is a must!
 
 ## Database setup 
