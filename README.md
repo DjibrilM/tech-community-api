@@ -33,6 +33,7 @@ POST:
  http://localhost:3000/authentication/signup
 ```
 
+
 ```javascript
    {
        firstName:'first name of the user',
