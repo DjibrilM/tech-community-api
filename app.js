@@ -7,6 +7,7 @@ const multer = require('multer')
 const app = express()
 
 
+
 //body-parser config 
 app.use(bodyParser.urlencoded({extended:false})); // app.use(bodyParser.urlencoded()); // x-www-form-urlencoded <form>
 app.use(bodyParser.json());
