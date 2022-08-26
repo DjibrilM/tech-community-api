@@ -1,6 +1,5 @@
 const usersModel = require('../models/user');
 
-
 exports.deleteRestToken = async  (email,res)=>{
 
 usersModel.find({email:email})
