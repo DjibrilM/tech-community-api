@@ -8,6 +8,7 @@ const sendGrideTransport = require("nodemailer-sendgrid-transport");
 const blogModel = require('../models/blog')
 const JWT = require('jsonwebtoken')
 
+
 const transporter = nodemailer.createTransport(
     sendGrideTransport({
       auth: {
